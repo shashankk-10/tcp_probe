@@ -1,0 +1,40 @@
+=== Rivest-Schapire vs Maler-Pnueli, perfect EQ oracle (isolates CE handling) ===
+machine                n     CE mode    EQ oracle |       mq   resets   symbols |   |S|  |E|  rnd  maxCE |    fillQ   rsBin      eqQ | ok
+tcp x counter L=0      10    RS 1 sufx  perfect   |      556      525      2365 |    10    9    4      6 |      549       7        0 | CORRECT
+                         RS per-CE: |CE|=4->2q(ceil log2=2) |CE|=5->2q(ceil log2=3) |CE|=6->3q(ceil log2=3) 
+tcp x counter L=0      10    MP all sfx perfect   |     1098      961      5566 |    10   18    4      6 |     1098       0        0 | CORRECT
+
+tcp x counter L=2      26    RS 1 sufx  perfect   |     1459     1370      7983 |    24   10    5      6 |     1450       9        0 | CORRECT
+                         RS per-CE: |CE|=4->2q(ceil log2=2) |CE|=5->2q(ceil log2=3) |CE|=5->2q(ceil log2=3) |CE|=6->3q(ceil log2=3) 
+tcp x counter L=2      26    MP all sfx perfect   |     2610     2113     15029 |    24   18    4      6 |     2610       0        0 | CORRECT
+
+tcp x counter L=5      50    RS 1 sufx  perfect   |     2720     2546     19655 |    45   10    5      8 |     2710      10        0 | CORRECT
+                         RS per-CE: |CE|=4->2q(ceil log2=2) |CE|=5->2q(ceil log2=3) |CE|=6->3q(ceil log2=3) |CE|=8->3q(ceil log2=3) 
+tcp x counter L=5      50    MP all sfx perfect   |     6775     4729     44228 |    45   25    5      8 |     6775       0        0 | CORRECT
+
+tcp x counter L=10     90    RS 1 sufx  perfect   |     4821     4507     48670 |    80   10    5     13 |     4810      11        0 | CORRECT
+                         RS per-CE: |CE|=4->2q(ceil log2=2) |CE|=5->2q(ceil log2=3) |CE|=6->3q(ceil log2=3) |CE|=13->4q(ceil log2=4) 
+tcp x counter L=10     90    MP all sfx perfect   |    14430     8334    105683 |    80   30    5     13 |    14430       0        0 | CORRECT
+
+tcp x counter L=20     170   RS 1 sufx  perfect   |     9021     8427    142383 |   150   10    5     23 |     9010      11        0 | CORRECT
+                         RS per-CE: |CE|=4->2q(ceil log2=2) |CE|=5->2q(ceil log2=3) |CE|=6->3q(ceil log2=3) |CE|=23->4q(ceil log2=5) 
+tcp x counter L=20     170   MP all sfx perfect   |    36040    15544    299468 |   150   40    5     23 |    36040       0        0 | CORRECT
+
+=== forced-long counterexamples: mod-n counter, |Sigma|=6 ===
+machine                n     CE mode    EQ oracle |       mq   resets   symbols |   |S|  |E|  rnd  maxCE |    fillQ   rsBin      eqQ | ok
+mod-10 counter         10    RS 1 sufx  perfect   |      430      420      3175 |    10    7    2     10 |      427       3        0 | CORRECT
+                         RS per-CE: |CE|=10->3q(ceil log2=4) 
+mod-10 counter         10    MP all sfx perfect   |      915      418      3223 |    10   15    2     10 |      915       0        0 | CORRECT
+
+mod-25 counter         25    RS 1 sufx  perfect   |     1061     1036     17886 |    25    7    2     25 |     1057       4        0 | CORRECT
+                         RS per-CE: |CE|=25->4q(ceil log2=5) 
+mod-25 counter         25    MP all sfx perfect   |     4530     1033     17983 |    25   30    2     25 |     4530       0        0 | CORRECT
+
+mod-40 counter         40    RS 1 sufx  perfect   |     1692     1652     44550 |    40    7    2     40 |     1687       5        0 | CORRECT
+                         RS per-CE: |CE|=40->5q(ceil log2=6) 
+mod-40 counter         40    MP all sfx perfect   |    10845     1648     44668 |    40   45    2     40 |    10845       0        0 | CORRECT
+
+mod-80 counter         80    RS 1 sufx  perfect   |     3373     3293    173970 |    80    7    2     80 |     3367       6        0 | CORRECT
+                         RS per-CE: |CE|=80->6q(ceil log2=7) 
+mod-80 counter         80    MP all sfx perfect   |    40885     3288    174128 |    80   85    2     80 |    40885       0        0 | CORRECT
+

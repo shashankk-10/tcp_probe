@@ -1,0 +1,48 @@
+TCP base: n=10 distinguishable=10 |Sigma|=6
+
+=== random-walk sweep vs the hidden challenge-counter chain (L=10, 80 states) ===
+machine                    n     EQ oracle    |       mq   resets   misses   symbols |   |S|  |E|  rnd  maxCE |    fillQ    rsBin      eqQ |   hit% ok
+tcp x counter L=10         90    rw 2k p=0.20 |     2664     1491     1491     11098 |    10    8    3     21 |      488        7     2169 |  44.0 WRONG
+                             cache: exactHits=1173 (2507 symbols served with NO fresh observation) prefixAudits=4901 trieEdges~6197
+tcp x counter L=10         90    rw 20k p=0.20 |    20664     8125     8125     72707 |    10    8    3     21 |      488        7    20169 |  60.7 WRONG
+                             cache: exactHits=12539 (29748 symbols served with NO fresh observation) prefixAudits=33735 trieEdges~38972
+tcp x counter L=10         90    rw 200k p=0.20 |   200664    60719    60719    623681 |    10    8    3     21 |      488        7   200169 |  69.7 WRONG
+                             cache: exactHits=139945 (379464 symbols served with NO fresh observation) prefixAudits=320965 trieEdges~302716
+tcp x counter L=10         90    rw 2k p=0.06 |     3811     3287     3287     63260 |    30    9    4     53 |     1629       15     2167 |  13.7 WRONG
+                             cache: exactHits=524 (1826 symbols served with NO fresh observation) prefixAudits=18809 trieEdges~44451
+tcp x counter L=10         90    rw 20k p=0.06 |    30435    23400    23400    522630 |    64   10    5     85 |     3850       22    26563 |  23.1 WRONG
+                             cache: exactHits=7035 (22155 symbols served with NO fresh observation) prefixAudits=127863 trieEdges~394767
+tcp x counter L=10         90    rw 200k p=0.06 |   210435   146879   146879   3326285 |    64   10    5     85 |     3850       22   206563 |  30.2 WRONG
+                             cache: exactHits=63556 (213503 symbols served with NO fresh observation) prefixAudits=873141 trieEdges~2453144
+tcp x counter L=10         90    rw 2k p=0.02 |     6077     5749     5749    258000 |    62   10    5    200 |     3730       24     2323 |   5.4 WRONG
+                             cache: exactHits=328 (2524 symbols served with NO fresh observation) prefixAudits=39893 trieEdges~218107
+tcp x counter L=10         90    rw 20k p=0.02 |    24077    22108    22108   1143697 |    62   10    5    200 |     3730       24    20323 |   8.2 WRONG
+                             cache: exactHits=1969 (7392 symbols served with NO fresh observation) prefixAudits=120444 trieEdges~1023253
+tcp x counter L=10         90    rw 200k p=0.02 |   204077   181023   181023   9873167 |    62   10    5    200 |     3730       24   200323 |  11.3 WRONG
+                             cache: exactHits=23054 (82744 symbols served with NO fresh observation) prefixAudits=1097698 trieEdges~8775469
+
+=== SYN-biased random walk (weight SYN 4x, others 1x) L=10 ===
+machine                    n     EQ oracle    |       mq   resets   misses   symbols |   |S|  |E|  rnd  maxCE |    fillQ    rsBin      eqQ |   hit% ok
+tcp x counter L=10         90    bias 2k p=0.06 |     6945     5991     5991     93329 |    80   10    5     49 |     4810       20     2115 |  13.7 CORRECT
+                             cache: exactHits=954 (5892 symbols served with NO fresh observation) prefixAudits=45375 trieEdges~47954
+tcp x counter L=10         90    bias 20k p=0.06 |    24945    18742    18742    376743 |    80   10    5     49 |     4810       20    20115 |  24.9 CORRECT
+                             cache: exactHits=6203 (22953 symbols served with NO fresh observation) prefixAudits=115443 trieEdges~261300
+tcp x counter L=10         90    bias 2k p=0.02 |     7644     7207     7207    241600 |    80   11    6     59 |     5291       26     2327 |   5.7 CORRECT
+                             cache: exactHits=437 (3117 symbols served with NO fresh observation) prefixAudits=56551 trieEdges~185049
+tcp x counter L=10         90    bias 20k p=0.02 |    25644    23250    23250   1120346 |    80   11    6     59 |     5291       26    20327 |   9.3 CORRECT
+                             cache: exactHits=2394 (9923 symbols served with NO fresh observation) prefixAudits=148252 trieEdges~972094
+
+=== W vs Wp suite growth: m = n+k for k=1..3, L=2 (24 states) ===
+machine                    n     EQ oracle    |       mq   resets   misses   symbols |   |S|  |E|  rnd  maxCE |    fillQ    rsBin      eqQ |   hit% ok
+tcp x counter L=2          26    W m=n+1      |     8241     4403     4403     32340 |    24   11    6      9 |     1595       14     6632 |  46.6 CORRECT
+                             cache: exactHits=3838 (27874 symbols served with NO fresh observation) prefixAudits=24023 trieEdges~8317
+tcp x counter L=2          26    Wp m=n+1     |     5177     2724     2724     18755 |    24   11    6      9 |     1595       13     3569 |  47.4 CORRECT
+                             cache: exactHits=2453 (16764 symbols served with NO fresh observation) prefixAudits=14175 trieEdges~4580
+tcp x counter L=2          26    W m=n+2      |    29671    21580    21580    181953 |    24   10    5      9 |     1450       10    28211 |  27.3 CORRECT
+                             cache: exactHits=8091 (63971 symbols served with NO fresh observation) prefixAudits=135229 trieEdges~46724
+tcp x counter L=2          26    Wp m=n+2     |    15018    10684    10684     89021 |    24   10    5      9 |     1450       10    13558 |  28.9 CORRECT
+                             cache: exactHits=4334 (33662 symbols served with NO fresh observation) prefixAudits=64776 trieEdges~24245
+tcp x counter L=2          26    W m=n+3      |   132280   126067   126067   1200312 |    24   10    5     10 |     1450       10   130820 |   4.7 CORRECT
+                             cache: exactHits=6213 (54468 symbols served with NO fresh observation) prefixAudits=920572 trieEdges~279740
+tcp x counter L=2          26    Wp m=n+3     |    59014    55658    55658    530635 |    24   10    5     10 |     1450       10    57554 |   5.7 CORRECT
+                             cache: exactHits=3356 (28532 symbols served with NO fresh observation) prefixAudits=393194 trieEdges~137441

@@ -1,0 +1,36 @@
+SYN-biased random-walk EQ oracle (2000 tests, p_stop=0.06), |S| cap=400, 20 seeds each.
+Symptom legend: I1 dup S row | I2 unclosed | I3 RS first-symbol | I4 dup suffix
+                I5 CE added no state | I6 cache contradiction | I7 |S| blowup
+
+SUL                  mode           |  term  corr wrong | first symptom histogram      | median |S| (true=80/10)
+S1 deterministic     cache,vote1    |    20    20     0 | -:20                         | 10  (mq avg 2596)
+S1 deterministic     nocache,vote1  |    20    20     0 | -:20                         | 10  (mq avg 2596)
+S1 deterministic     nocache,vote5  |    20    20     0 | -:20                         | 10  (mq avg 2596)
+S1 deterministic     nocache,vote9  |    20    20     0 | -:20                         | 10  (mq avg 2596)
+S3 host-global cnt   cache,vote1    |     0     0     0 | I7:20                        | 401  (mq avg 74972)
+S3 host-global cnt   nocache,vote1  |     0     0     0 | I3:20                        | 8  (mq avg 300)
+S3 host-global cnt   nocache,vote5  |     0     0     0 | I3:20                        | 7  (mq avg 264)
+S3 host-global cnt   nocache,vote9  |     0     0     0 | I3:20                        | 8  (mq avg 300)
+S4 window straddle   cache,vote1    |     1     1     0 | -:1 I7:19                    | 401  (mq avg 30089)
+S4 window straddle   nocache,vote1  |     0     4     0 | I5:4 I7:16                   | 401  (mq avg 24990)
+S4 window straddle   nocache,vote5  |    16    20     0 | -:13 I5:4 I6:3               | 10  (mq avg 2584)
+S4 window straddle   nocache,vote9  |    20    20     0 | -:19 I6:1                    | 10  (mq avg 2596)
+S5 lost pkt p=0.02   cache,vote1    |     0     0     0 | I7:20                        | 401  (mq avg 19519)
+S5 lost pkt p=0.02   nocache,vote1  |     0     0     0 | I3:7 I7:13                   | 401  (mq avg 12829)
+S5 lost pkt p=0.02   nocache,vote5  |     6    20     0 | -:5 I5:14 I6:1               | 10  (mq avg 1849)
+S5 lost pkt p=0.02   nocache,vote9  |    20    20     0 | -:20                         | 10  (mq avg 2596)
+S5 lost pkt p=0.10   cache,vote1    |     0     0     0 | I7:20                        | 401  (mq avg 19753)
+S5 lost pkt p=0.10   nocache,vote1  |     0     0     0 | I3:3 I3:7 I4:1 I7:9          | 359  (mq avg 10427)
+S5 lost pkt p=0.10   nocache,vote5  |     0     0     0 | I3:14 I7:6                   | 73  (mq avg 8917)
+S5 lost pkt p=0.10   nocache,vote9  |     0    10     0 | I3:4 I5:12 I7:4              | 17  (mq avg 11310)
+S6 mapper bug (det)  cache,vote1    |    20     0    20 | -:20                         | 10  (mq avg 2596)
+S6 mapper bug (det)  nocache,vote1  |    20     0    20 | -:20                         | 10  (mq avg 2596)
+S6 mapper bug (det)  nocache,vote5  |    20     0    20 | -:20                         | 10  (mq avg 2596)
+S6 mapper bug (det)  nocache,vote9  |    20     0    20 | -:20                         | 10  (mq avg 2596)
+S7 prev-query leak   cache,vote1    |     0     0     0 | I5:20                        | 2  (mq avg 97)
+S7 prev-query leak   nocache,vote1  |     0     0     0 | I3:20                        | 2  (mq avg 84)
+S7 prev-query leak   nocache,vote5  |     0     0     0 | I3:20                        | 2  (mq avg 84)
+S7 prev-query leak   nocache,vote9  |     0     0     0 | I3:20                        | 2  (mq avg 84)
+
+NOTE: 'corr' means the final hypothesis is exactly the DETERMINISTIC reference
+(10 states). For S3/S4 no correct answer exists -- the SUL is not a Mealy machine.

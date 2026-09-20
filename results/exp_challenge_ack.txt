@@ -1,0 +1,36 @@
+add host 10.90.0.2: gateway utun4: File exists
+==============================================================
+CHALLENGE-ACK LIMITER -- per connection on XNU, per host on Linux
+==============================================================
+kernel            : root:xnu-11417.140.69~1/RELEASE_ARM64_T8103
+rtt_min           : 100 ms      rexmt_slop : 200 ms
+enable_tlp        : 1         delayed_ack: 3
+sack              : 1         mssdflt    : 512
+rexmt_thresh      : 3         chalack_lim: 10
+sendspace         : 131072    recvspace  : 131072
+interface         : utun4  (10.90.0.1 <-> 10.90.0.2, port 9999)
+
+predicting exactly 10 bare ACKs per 25 probes, per connection, per 1000 ms window
+
+trigger                          ACKs   RSTs   vs limit  site
+SYN in ESTABLISHED                 10      0   == limit  tcp_input.c:4133 (RFC 5961 s4.2)
+ACK above snd_max                  10      0   == limit  tcp_input.c:4874 rcvacktoomuch
+in-window RST, seq != RCV.NXT      10      0   == limit  tcp_input.c:4271 badrst
+
+3 of 3 triggers hit exactly 10. Using "SYN in ESTABLISHED" below.
+
+per-connection budget:
+  X drained          -> 10 ACKs
+  fresh Y right after-> 10 ACKs   (a host-global counter would have starved Y)
+
+same input, same ESTABLISHED state, only elapsed time differs:
+  t=0 ms            -> 10 ACKs
+  t=603 ms (same window) -> 0 ACKs
+  t=2105 ms (next window) -> 10 ACKs
+  as predicted by the fixed-window reading of tcp_input.c:487
+
+control: set challengeack_limit=3 -> 3 ACKs  (tracks exactly)
+challengeack_limit restored to 10
+
+harness integrity: frames written 246, segments read 86, non-IPv4 0, unparseable 0
+  utun rcvbuf granted 2097152 bytes, peak queued 52 (0.0%)

@@ -1,0 +1,72 @@
+add host 10.90.0.2: gateway utun4: File exists
+==============================================================
+RETRANSMISSION TIMEOUT -- floor, RTT dependence, backoff ladder
+==============================================================
+kernel            : root:xnu-11417.140.69~1/RELEASE_ARM64_T8103
+rtt_min           : 100 ms      rexmt_slop : 200 ms
+enable_tlp        : 1         delayed_ack: 3
+sack              : 1         mssdflt    : 512
+rexmt_thresh      : 3         chalack_lim: 10
+sendspace         : 131072    recvspace  : 131072
+interface         : utun4  (10.90.0.1 <-> 10.90.0.2, port 9999)
+
+predicted RTO floor = rtt_min + rexmt_slop = 100 + 200 = 300 ms
+predicted ladder    = tcp_backoff[] {1,2,4,8,16,...} x RTO (tcp_timer.c:886,1275)
+
+Part 1 -- first retransmission after a tail loss (no SACK, so no TLP)
+
+injected delay   syn->sa (ms) first RTO (ms)   over floor
+ (ms, one way)                                       (ms)
+           0.0          0.198          231.6        -68.4
+           5.0          0.237          237.5        -62.5
+          20.0          0.318          272.5        -27.5
+          60.0          0.386          433.1        133.1
+
+  Reading the 'over floor' column: 300 ms is an INFERENCE from two
+  sysctl names, not a macro anyone has read -- TCPT_RANGESET and
+  TCP_ADD_REXMTSLOP live in tcp_timer.h, which is not in reference/xnu.
+  What the column actually tests is the SHAPE: if it stays flat while
+  the injected delay grows, the RTO is dominated by a floor rather
+  than by any measurement of this path, and the tail-loss cost in
+  exp_hol is a constant of the stack, not of the network. A column
+  that rises with the delay means the opposite.
+
+Part 3 -- backoff ladder: every copy of the last segment is dropped
+
+  rung       t (ms)     interval  interval-slop  raw ratio       / base
+     1        231.7        230.4           30.4          -          1.0
+     2        492.4        260.8           60.8       1.13          2.0
+     3        722.8        230.4           30.4       0.88          1.0
+     4        985.2        262.4           62.4       1.14          2.1
+     5       1305.9        320.7          120.7       1.22          4.0
+     6       1745.5        439.7          239.7       1.37          7.9
+     7       2427.2        681.7          481.7       1.55         15.9
+     8       3588.1       1160.9          960.9       1.70         31.6
+     9       5708.7       2120.6         1920.6       1.83         63.3
+    10       7830.0       2121.2         1921.2       1.00         63.3
+    11       9950.9       2120.9         1920.9       1.00         63.3
+
+  recovered base RTO = 30.4 ms; slop = 200 ms; first RTO = 230.4 ms
+
+  Read the '/ base' column. It should reproduce tcp_backoff[] =
+  {1,2,4,8,16,32,64,64,...} (tcp_timer.c:886-887) directly.
+
+  The raw ratio column never reaches 2.00 and even dips below
+  1.0, which a monotonic backoff array cannot produce. That is an
+  artefact of the constant term: because the slop is added AFTER
+  the multiply -- RTO = slop + base*backoff, not
+  (slop + base)*backoff -- it drags every raw ratio toward 1.
+  Subtracting it first is what makes the array visible, and it is
+  also why the first RTO (230 ms) sits BELOW the naive
+  rtt_min+rexmt_slop guess of 300 ms: rtt_min is not the base.
+
+  ONE ANOMALY REMAINS, unresolved:
+  the shift counter appears to RESET once early in the ladder --
+  the multiplier sequence runs 1, 2, then 1, 2 again before
+  continuing 4, 8, 16, 32, 64. A single reset of t_rxtshift after
+  the second retransmission is not something this experiment can
+  attribute to a line; bsd/netinet/tcp_timer.h is not in
+  reference/xnu, and tcp_timer.c has several paths that zero it.
+
+harness integrity: frames written 176, segments read 186, non-IPv4 0, unparseable 0
+  utun rcvbuf granted 2097152 bytes, peak queued 1068 (0.1%)

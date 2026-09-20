@@ -1,0 +1,72 @@
+TCP base: n=10 distinguishable=10 |Sigma|=6
+  limit L=0   reachable states=10   distinguishable=10  
+  limit L=1   reachable states=18   distinguishable=17  
+  limit L=2   reachable states=26   distinguishable=24  
+  limit L=3   reachable states=34   distinguishable=31  
+  limit L=5   reachable states=50   distinguishable=45  
+  limit L=10  reachable states=90   distinguishable=80  
+
+=== TCP base x challenge counter, EQ oracles compared (cache ON) ===
+machine                    n     EQ oracle    |       mq   resets   misses   symbols |   |S|  |E|  rnd  maxCE |    fillQ    rsBin      eqQ |   hit% ok
+tcp x counter L=0          10    perfect      |      556      525      525      2365 |    10    9    4      6 |      549        7        0 |   5.6 CORRECT
+tcp x counter L=0          10    W m=n+1      |     3307     1901     1901     11014 |    10   10    5      7 |      610       10     2687 |  42.5 CORRECT
+tcp x counter L=0          10    Wp m=n+1     |     1690     1058     1058      5843 |    10   10    5      7 |      610       11     1069 |  37.4 CORRECT
+tcp x counter L=0          10    W m=n+2      |    12165     9627     9627     68014 |    10    9    4      7 |      549        7    11609 |  20.9 CORRECT
+tcp x counter L=0          10    Wp m=n+2     |     4611     3770     3770     26602 |    10    9    4      7 |      549        8     4054 |  18.2 CORRECT
+tcp x counter L=0          10    rw 2k p=.06  |     2538     2094     2094     36268 |    10    8    3     36 |      488        9     2041 |  17.5 CORRECT
+tcp x counter L=0          10    rw 20k p=.06 |    20538    15504    15504    321815 |    10    8    3     36 |      488        9    20041 |  24.5 CORRECT
+
+tcp x counter L=1          18    perfect      |      934      885      885      4692 |    17    9    4      6 |      927        7        0 |   5.2 CORRECT
+tcp x counter L=1          18    W m=n+1      |     5407     3069     3069     20110 |    17   10    5      7 |     1030       11     4366 |  43.2 CORRECT
+tcp x counter L=1          18    Wp m=n+1     |     3279     1856     1856     11730 |    17   10    5      8 |     1030       11     2238 |  43.4 CORRECT
+tcp x counter L=1          18    W m=n+2      |    20076    14776    14776    114801 |    17    9    4      8 |      927        8    19141 |  26.4 CORRECT
+tcp x counter L=1          18    Wp m=n+2     |     9894     7054     7054     54786 |    17    9    4      8 |      927        8     8959 |  28.7 CORRECT
+tcp x counter L=1          18    rw 2k p=.06  |     2874     2421     2421     39865 |    17    8    3     36 |      824        9     2041 |  15.8 CORRECT
+tcp x counter L=1          18    rw 20k p=.06 |    20874    15828    15828    325396 |    17    8    3     36 |      824        9    20041 |  24.2 CORRECT
+
+tcp x counter L=2          26    perfect      |     1459     1370     1370      7983 |    24   10    5      6 |     1450        9        0 |   6.1 CORRECT
+tcp x counter L=2          26    W m=n+1      |     8241     4403     4403     32340 |    24   11    6      9 |     1595       14     6632 |  46.6 CORRECT
+tcp x counter L=2          26    Wp m=n+1     |     5177     2724     2724     18755 |    24   11    6      9 |     1595       13     3569 |  47.4 CORRECT
+tcp x counter L=2          26    W m=n+2      |    29671    21580    21580    181953 |    24   10    5      9 |     1450       10    28211 |  27.3 CORRECT
+tcp x counter L=2          26    Wp m=n+2     |    15018    10684    10684     89021 |    24   10    5      9 |     1450       10    13558 |  28.9 CORRECT
+tcp x counter L=2          26    rw 2k p=.06  |     3191     2722     2722     44923 |    24    8    3     43 |     1160        9     2022 |  14.7 CORRECT
+tcp x counter L=2          26    rw 20k p=.06 |    21191    16129    16129    330502 |    24    8    3     43 |     1160        9    20022 |  23.9 CORRECT
+
+tcp x counter L=3          34    perfect      |     1880     1774     1774     11468 |    31   10    5      6 |     1870       10        0 |   5.6 CORRECT
+tcp x counter L=3          34    W m=n+1      |     3222     1818     1818     10432 |    10   10    5      6 |      610        9     2603 |  43.6 WRONG
+tcp x counter L=3          34    Wp m=n+1     |     1721     1113     1113      6273 |    10   10    5      6 |      610       10     1101 |  35.3 WRONG
+tcp x counter L=3          34    W m=n+2      |    38088    27788    27788    256144 |    31   10    5     11 |     1870       12    36206 |  27.0 CORRECT
+tcp x counter L=3          34    Wp m=n+2     |    19638    14169    14169    131597 |    31   10    5     11 |     1870       12    17756 |  27.8 CORRECT
+tcp x counter L=3          34    rw 2k p=.06  |     3528     3051     3051     49937 |    31    8    3     43 |     1496       10     2022 |  13.5 CORRECT
+tcp x counter L=3          34    rw 20k p=.06 |    21528    16461    16461    335533 |    31    8    3     43 |     1496       10    20022 |  23.5 CORRECT
+
+tcp x counter L=5          50    perfect      |     2720     2546     2546     19655 |    45   10    5      8 |     2710       10        0 |   6.4 CORRECT
+tcp x counter L=5          50    W m=n+1      |     3222     1818     1818     10432 |    10   10    5      6 |      610        9     2603 |  43.6 WRONG
+tcp x counter L=5          50    Wp m=n+1     |     1721     1113     1113      6273 |    10   10    5      6 |      610       10     1101 |  35.3 WRONG
+tcp x counter L=5          50    W m=n+2      |    11964     8703     8703     60722 |    10    9    4      6 |      549        7    11408 |  27.3 WRONG
+tcp x counter L=5          50    Wp m=n+2     |     4923     3944     3944     28538 |    10    9    4      7 |      549        8     4366 |  19.9 WRONG
+tcp x counter L=5          50    rw 2k p=.06  |     4494     3928     3928     64316 |    45    9    4     36 |     2439       14     2041 |  12.6 CORRECT
+tcp x counter L=5          50    rw 20k p=.06 |    22494    17330    17330    349817 |    45    9    4     36 |     2439       14    20041 |  23.0 CORRECT
+
+tcp x counter L=10         90    perfect      |     4821     4507     4507     48670 |    80   10    5     13 |     4810       11        0 |   6.5 CORRECT
+tcp x counter L=10         90    W m=n+1      |     3222     1818     1818     10432 |    10   10    5      6 |      610        9     2603 |  43.6 WRONG
+tcp x counter L=10         90    Wp m=n+1     |     1721     1113     1113      6273 |    10   10    5      6 |      610       10     1101 |  35.3 WRONG
+tcp x counter L=10         90    W m=n+2      |    11964     8703     8703     60722 |    10    9    4      6 |      549        7    11408 |  27.3 WRONG
+tcp x counter L=10         90    Wp m=n+2     |     4923     3944     3944     28538 |    10    9    4      7 |      549        8     4366 |  19.9 WRONG
+tcp x counter L=10         90    rw 2k p=.06  |     3811     3287     3287     63095 |    30    9    4     53 |     1629       15     2167 |  13.7 WRONG
+tcp x counter L=10         90    rw 20k p=.06 |    30480    23430    23430    518349 |    64   10    5     80 |     3850       22    26608 |  23.1 WRONG
+
+=== same, cache OFF (raw resets to the SUL) ===
+machine                    n     EQ oracle    |       mq   resets   misses   symbols |   |S|  |E|  rnd  maxCE |    fillQ    rsBin      eqQ |   hit% ok
+tcp x counter L=0          10    perfect      |      556      556        0      2502 |    10    9    4      6 |      549        7        0 |   0.0 CORRECT
+tcp x counter L=0          10    Wp m=n+1     |     1690     1690        0      9321 |    10   10    5      7 |      610       11     1069 |   0.0 CORRECT
+tcp x counter L=0          10    rw 20k p=.06 |    20538    20538        0    335997 |    10    8    3     36 |      488        9    20041 |   0.0 CORRECT
+
+tcp x counter L=3          34    perfect      |     1880     1880        0     12104 |    31   10    5      6 |     1870       10        0 |   0.0 CORRECT
+tcp x counter L=3          34    Wp m=n+1     |     1721     1721        0      9551 |    10   10    5      6 |      610       10     1101 |   0.0 WRONG
+tcp x counter L=3          34    rw 20k p=.06 |    21528    21528        0    350055 |    31    8    3     43 |     1496       10    20022 |   0.0 CORRECT
+
+tcp x counter L=10         90    perfect      |     4821     4821        0     51705 |    80   10    5     13 |     4810       11        0 |   0.0 CORRECT
+tcp x counter L=10         90    Wp m=n+1     |     1721     1721        0      9551 |    10   10    5      6 |      610       10     1101 |   0.0 WRONG
+tcp x counter L=10         90    rw 20k p=.06 |    30480    30480        0    540520 |    64   10    5     80 |     3850       22    26608 |   0.0 WRONG
+

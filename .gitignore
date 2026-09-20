@@ -1,0 +1,11 @@
+build/
+cmake-build-*/
+*.dSYM/
+.cache/
+.idea/
+.vscode/
+compile_commands.json
+.DS_Store
+
+# published papers referenced by the experiments; kept locally, not redistributed
+reference/priorart/

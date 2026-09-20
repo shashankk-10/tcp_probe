@@ -1,0 +1,78 @@
+add host 10.90.0.2: gateway utun4: File exists
+==============================================================
+DUPLICATE-ACK THRESHOLD -- it is not 3, it adapts
+==============================================================
+kernel            : root:xnu-11417.140.69~1/RELEASE_ARM64_T8103
+rtt_min           : 100 ms      rexmt_slop : 200 ms
+enable_tlp        : 1         delayed_ack: 3
+sack              : 1         mssdflt    : 512
+rexmt_thresh      : 3         chalack_lim: 10
+sendspace         : 131072    recvspace  : 131072
+interface         : utun4  (10.90.0.1 <-> 10.90.0.2, port 9999)
+
+net.inet.tcp.rexmt_thresh = 3 (tcp_input.c:265). sysctl_rexmtthresh
+(tcp_input.c:7831) accepts only 2 or 3; anything else returns EINVAL.
+tcp_early_rexmt_check (tcp_input.c:1491, RFC 5827) lowers the
+PER-CONNECTION threshold to max(osegs-1, 1) when osegs < 4, and is
+capped at 10 uses per 60 s UNLESS SACK is enabled (lines 319-323, 1497).
+
+Part 1 -- cap the stimulus: exactly N segments follow the hole
+(SACK off, so neither SACK recovery nor the tail loss probe can repair it)
+
+  segments         HoL (ms)    dupACKs      predicted recovery
+  after hole                      sent      threshold 
+   1                  0.287          1              1 fast
+   2                  0.134          2              2 fast
+   3                  0.132          3              3 fast
+   4                  0.130          4              3 fast
+   5                  0.136          5              3 fast
+
+  Note the N=1 row. One duplicate ACK, and it still recovers at RTT
+  speed. Under a fixed threshold of 3 that is impossible.
+
+Part 2 -- the control: exhaust the early-retransmit budget
+Prediction: without SACK the first ~10 losses repair fast and the rest
+fall to the RTO. With SACK the counter is bypassed and none degrade.
+
+  no SACK     connection, 14 consecutive single-segment losses:
+    round       HoL (ms)   recovery
+    0              0.134       fast
+    1              0.056       fast
+    2              0.056       fast
+    3              0.100       fast
+    4              0.060       fast
+    5              0.054       fast
+    6              0.062       fast
+    7              0.065       fast
+    8              0.072       fast
+    9              0.070       fast
+    10           232.717      TIMER
+    11           233.435      TIMER
+    12           234.726      TIMER
+    13           230.424      TIMER
+    => 10 fast, 4 timer
+
+  SACK        connection, 14 consecutive single-segment losses:
+    round       HoL (ms)   recovery
+    0              0.155       fast
+    1              0.064       fast
+    2              0.059       fast
+    3              0.061       fast
+    4             10.116       fast
+    5              0.063       fast
+    6              0.091       fast
+    7              0.065       fast
+    8              0.050       fast
+    9              0.072       fast
+    10             0.066       fast
+    11             0.054       fast
+    12             0.063       fast
+    13             0.067       fast
+    => 14 fast, 0 timer
+
+A cliff at a COUNT cannot be produced by a timer. If the no-SACK arm
+steps to RTO-speed partway down and the SACK arm does not, the fast
+recoveries in Part 1 were early retransmit.
+
+harness integrity: frames written 725, segments read 750, non-IPv4 0, unparseable 0
+  utun rcvbuf granted 2097152 bytes, peak queued 1068 (0.1%)

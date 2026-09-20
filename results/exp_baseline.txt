@@ -1,0 +1,32 @@
+add host 10.90.0.2: gateway utun4: File exists
+==============================================================
+BASELINE -- an unimpaired transfer, to anchor every other number
+==============================================================
+kernel            : root:xnu-11417.140.69~1/RELEASE_ARM64_T8103
+rtt_min           : 100 ms      rexmt_slop : 200 ms
+enable_tlp        : 1         delayed_ack: 3
+sack              : 1         mssdflt    : 512
+rexmt_thresh      : 3         chalack_lim: 10
+sendspace         : 131072    recvspace  : 131072
+interface         : utun4  (10.90.0.1 <-> 10.90.0.2, port 9999)
+
+arm                            syn->sa  transfer   goodput    segs     mss   sackOK
+---                               (ms)      (ms)    (MB/s)                         
+no SACK, no injected delay       0.303     4.412      14.9      64    1024       no
+SACK,    no injected delay       0.215     0.983      66.7      64    1024      yes
+SACK,    5 ms ACK delay          0.222    18.479       3.5      65    1024      yes
+    NOTE: 1 retransmissions on a run with no loss policy -- the path is not clean.
+SACK,   20 ms ACK delay          0.285    80.854       0.8      64    1024      yes
+
+Reading this table:
+  syn->sa is the floor. It is one round trip through utun plus the
+  stack's own handling, measured on this process's clock, and no
+  recovery interval in the other experiments can be smaller.
+  mss should equal what we advertised (1024). If the kernel used
+  mssdflt=512 instead, our MSS option was not parsed and every drop
+  rule expressed in byte offsets selects a different segment.
+  The injected delay is ONE WAY, on our ACKs only: the kernel's RTT
+  sample is ~= the delay, not twice it.
+
+harness integrity: frames written 269, segments read 264, non-IPv4 0, unparseable 0
+  utun rcvbuf granted 2097152 bytes, peak queued 1068 (0.1%)

@@ -1,0 +1,39 @@
+add host 10.90.0.2: gateway utun4: File exists
+==============================================================
+HEAD-OF-LINE BLOCKING -- the cost of one lost segment
+==============================================================
+kernel            : root:xnu-11417.140.69~1/RELEASE_ARM64_T8103
+rtt_min           : 100 ms      rexmt_slop : 200 ms
+enable_tlp        : 1         delayed_ack: 3
+sack              : 1         mssdflt    : 512
+rexmt_thresh      : 3         chalack_lim: 10
+sendspace         : 131072    recvspace  : 131072
+interface         : utun4  (10.90.0.1 <-> 10.90.0.2, port 9999)
+
+predicted, from reference/xnu at root:xnu-11417.140.69~1/RELEASE_ARM64_T8103:
+  fast retransmit at 3 duplicate ACKs        (tcp_input.c:265, net.inet.tcp.rexmt_thresh)
+  TLP armed only when SACK was negotiated     (tcp_output.c:2966)
+  RTO floor = rtt_min + rexmt_slop = 100 + 200 = 300 ms
+
+arm                         HoL delay    syn->sa   dupACKs  rexmits  delivered  recovered by
+---                              (ms)       (ms)                         bytes  
+mid-stream loss, no SACK        0.742      0.153        47        1      98304  fast-retransmit
+     retransmits at: t=1.8ms off=49152
+mid-stream loss, SACK           0.744      0.163        48        2      98304  fast-retransmit
+     retransmits at: t=1.9ms off=49152 t=1.9ms off=97280
+tail loss,       no SACK      229.619      0.204         0        1      98304  rto
+     retransmits at: t=231.6ms off=97280
+tail loss,       SACK           2.874      0.266         0        1      98304  tlp
+     retransmits at: t=5.0ms off=97280
+
+What to look for:
+  The two mid-stream rows should be fast and close to each other:
+  SACK changes what the sender knows, but with data still flowing it
+  would have found the hole from duplicate ACKs regardless.
+  The two tail rows are the result. If they differ by roughly the RTO
+  floor, then omitting two bytes of TCP option in the SYN cost the
+  application an entire retransmission timeout -- which is the claim
+  tcp_output.c:2966 predicts and the reason this arm exists.
+
+harness integrity: frames written 397, segments read 396, non-IPv4 0, unparseable 0
+  utun rcvbuf granted 2097152 bytes, peak queued 1068 (0.1%)
