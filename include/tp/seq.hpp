@@ -2,9 +2,9 @@
 
 // TCP sequence-space comparison (RFC 1323 appendix). Sequence numbers are a
 // 32-bit cyclic space, so ordering is defined by the sign of the difference,
-// not by <. Using plain < works for every experiment in this repo -- none runs
-// long enough to wrap -- which is exactly why it would be a latent bug rather
-// than an immediate one, so it is done properly here.
+// not by <. Plain < works for every experiment here, since none runs long
+// enough to wrap. That makes it a latent bug, not an immediate one, so it is
+// done properly.
 
 #include <cstdint>
 

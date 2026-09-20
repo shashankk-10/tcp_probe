@@ -95,7 +95,7 @@ struct Outcome {
 };
 
 // Stands up one connection, has the KERNEL send `bytes`, and receives them
-// under `loss`. The kernel is the sender on purpose: every retransmission
+// under `loss`. The kernel is the sender by design: every retransmission
 // decision then belongs to XNU rather than to this program.
 inline Outcome run_scenario(Lab& lab, const PeerConfig& cfg, uint32_t bytes,
                             double timeout_ms, LossPolicy& loss) {

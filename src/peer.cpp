@@ -222,8 +222,8 @@ RunSummary Peer::receive(uint32_t total_target, double timeout_ms, LossPolicy& l
             // the head-of-line delay come out as an epoch.
             sum.t_hole_created = tr_.events().back().t_ms;
           }
-          // No ACK at all. Withholding it is what makes this a loss rather
-          // than a reordering.
+          // No ACK at all. Withholding it turns this into a loss instead of
+          // a reordering.
           continue;
         }
 
@@ -323,7 +323,7 @@ void Peer::reset() {
   // any queued ACKs are not on that path: reusing this object would have
   // compared the new connection's segments against the old frontier and
   // reported the whole stream as duplicate. No experiment re-establishes on one
-  // Peer today, which is exactly why this would have been found late.
+  // Peer today, so this would have been found late.
   rsm_.reset();
   pending_.clear();
   cur_ = nullptr;

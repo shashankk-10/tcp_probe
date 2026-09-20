@@ -22,7 +22,7 @@ inline uint32_t sum_be16(const void* data, size_t len) {
 
 // Folds carries and complements. The result is a host-order number whose
 // big-endian encoding belongs in the checksum field, so callers store it with
-// htons(). Returning host order rather than network order is deliberate: it
+// htons(). Host order is returned, not network order, because it
 // makes the one place that byte-swaps visible instead of hiding a swap inside
 // a function whose name says nothing about byte order.
 inline uint16_t fold(uint32_t sum) {

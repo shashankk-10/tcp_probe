@@ -12,8 +12,8 @@ using namespace tp;
 
 int main() {
   // ---- a rule fires once by default: the original is lost, the first
-  // retransmission gets through. That is what makes the run measure recovery
-  // rather than the backoff ladder.
+  // retransmission gets through. That is how the run measures recovery and not
+  // the backoff ladder.
   {
     LossPolicy p;
     p.add({1000, 1001, 1, 0});

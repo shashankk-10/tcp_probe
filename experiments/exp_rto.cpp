@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
   LossPolicy loss;
   // times = 12: drop the original and every retransmission, so the connection
   // climbs the ladder instead of recovering on the first rung. This is the one
-  // experiment that deliberately measures backoff rather than recovery.
+  // experiment that measures backoff instead of recovery.
   loss.add({kBytes - 1, kBytes, 12, 0});
 
   Outcome o = run_scenario(lab, cfg, kBytes, 30000, loss);
@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
       // drifting toward 2 without ever reaching it, and dipping below 1.0,
       // which a monotonic backoff array cannot produce.
       //
-      // Subtracting rexmt_slop first is what makes it fall out. If the slop is
+      // Subtract rexmt_slop first and it falls out. If the slop is
       // added AFTER the backoff multiplication -- RTO = slop + base*2^shift
       // rather than (slop + base)*2^shift -- then the raw ratio is dragged
       // toward 1 by the constant, while (interval - slop) doubles exactly.
@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
       printf("  artefact of the constant term: because the slop is added AFTER\n");
       printf("  the multiply -- RTO = slop + base*backoff, not\n");
       printf("  (slop + base)*backoff -- it drags every raw ratio toward 1.\n");
-      printf("  Subtracting it first is what makes the array visible, and it is\n");
+      printf("  Subtract it first and the array is visible. It is\n");
       printf("  also why the first RTO (%.0f ms) sits BELOW the naive\n", base + slop);
       printf("  rtt_min+rexmt_slop guess of %d ms: rtt_min is not the base.\n",
              lab.knobs.rtt_min + lab.knobs.rexmt_slop);

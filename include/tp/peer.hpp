@@ -3,13 +3,11 @@
 // The synthetic TCP peer: the other end of the connection, implemented in
 // userspace, with the real XNU stack opposite it.
 //
-// The peer is deliberately the CLIENT and the kernel is deliberately the
-// SENDER. That orientation is what makes the measurements about the kernel:
-// every retransmission decision, every timer, and every congestion-control
-// response belongs to XNU, and this class only decides what to acknowledge and
-// when. If the peer were the sender, the recovery timings would be this
-// program's own policy reflected back, which would look like a result and be
-// worth nothing.
+// The peer is the CLIENT and the kernel is the SENDER. That orientation keeps
+// the measurements about the kernel: every retransmission decision, every timer
+// and every congestion-control response belongs to XNU, and this class only
+// picks what to acknowledge and when. Swap the roles and the recovery timings
+// are just this program's own ACK policy measured back.
 //
 // The peer negotiates no timestamps and no window scale. Both have
 // consequences: no window scale caps the advertised window at 65535, and no
@@ -135,8 +133,8 @@ class Peer {
                     double collect_ms);
 
   // Tears the connection down with a RST so the next experiment starts from a
-  // clean port. Politeness is not the point -- leaving the kernel socket in
-  // FIN-WAIT means the next run on the same 4-tuple behaves differently.
+  // clean port. A polite FIN would leave the kernel socket in FIN-WAIT, and the
+  // next run on the same 4-tuple would behave differently.
   void reset();
 
  private:

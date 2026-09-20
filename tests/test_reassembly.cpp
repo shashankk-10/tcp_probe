@@ -120,10 +120,9 @@ int main() {
     CHECK_EQ(r.delivered(), 0u);
   }
 
-  // ---- sequence-space wraparound. Nothing in this repo runs long enough to
-  // wrap, which is exactly why this would be a silent bug rather than a loud
-  // one: near 2^32 a comparison written with < instead of seq_lt() sends the
-  // frontier backwards.
+  // ---- sequence-space wraparound. Nothing here runs long enough to wrap, so
+  // a bug in this would stay silent: near 2^32 a comparison written with <
+  // instead of seq_lt() sends the frontier backwards.
   {
     const uint32_t near_wrap = 0xffffff00u;
     Reassembly r(near_wrap);

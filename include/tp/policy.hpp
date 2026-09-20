@@ -46,8 +46,8 @@ class LossPolicy {
 
   int total_dropped() const { return dropped_; }
   // Rules that never fired. An experiment whose rule never matched did not
-  // test what its name says, and silently reporting a clean run in that case
-  // is the worst outcome available -- so callers are expected to assert on it.
+  // test what its name says, and would still print a clean-looking run. So
+  // callers are expected to assert on it.
   std::vector<size_t> unfired() const;
 
   const std::vector<DropRule>& rules() const { return rules_; }
