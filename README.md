@@ -73,13 +73,15 @@ kernel build and hardware in `run-metadata.txt`. Every number above is from ther
 - `utun` is software, so there is no real network latency. The RTO numbers are
   mostly the kernel's floor; `exp_rto` sweeps an injected delay to show how much.
   The injected delay is one way, on our ACKs only.
-- The constants are XNU's. The mechanisms are RFC standard and in every stack,
-  but Linux arms TLP without needing SACK.
+- The constants are XNU's. The mechanisms are RFC standard (early retransmit is
+  RFC 5827, TLP is RFC 8985). Linux, like XNU, arms TLP only when SACK was agreed
+  (`tcp_schedule_loss_probe()` in `net/ipv4/tcp_output.c`).
 - Loss is chosen, not random. Repeatable, but not a model of real loss. No
   window scale or timestamps, so the window caps at 65535.
 - I cannot prove the harness never dropped a frame: a control socket that
   overflows keeps no counter. Each run instead prints how deep the receive queue
   actually got, and warns if it passes half the buffer.
 
-`reference/` (pinned XNU sources and RFCs) is not committed. Refetch at the tag
-in `reference/xnu/VERSION` and `shasum` against it.
+`reference/` holds the pinned XNU sources and RFC texts that the line references
+above point to; `reference/xnu/VERSION` names the tag. Only `reference/priorart/`
+is not committed.
